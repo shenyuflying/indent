@@ -1,0 +1,91 @@
+#!/bin/sh
+
+
+usage () {
+	echo "====================================================================="
+	echo " indent - A C code format tool"
+	echo ""
+	echo "    which will detect following format defects"
+	echo "       1. space before and after == && != >> << + - -= += > <"
+	echo "       2. space after if for"
+	echo "       3. space after , "
+	echo "       4. tailing blanks"
+	echo "    after the code is formatted, indent will invoke vimdiff"
+	echo "    for you to mannualy merge the code use the following command"
+	echo "       ']c' command to move next difference "
+	echo "       '[c' command to move previous difference "
+	echo "       'po' command to merge the current difference"
+	echo "Bugs:  1. failed to format '*' '/'"
+	echo "       2. failed to format when partial correct such as a+ b to a + b"
+	echo "       3. will format comments which not wanted"
+	echo "                      report more bugs to  shenyufly@163.com"
+	echo "===================================================================="
+	echo "Usage: indent filename"
+	echo ""
+
+}
+
+gen_sed_script () {
+	cat  <<EOF > indent.sed
+#!/bin/sed -f                                                                                                                                                                                      
+EOF
+
+for c in '+' '-' '=' '>' '<' "[+-]="
+do
+	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\([a-zA-Z0-9]\)/\\1 \\2 \\3/g' >> indent.sed
+	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\([a-zA-Z0-9]\)/\\1 \\2 \\3/g' >> indent.sed
+done
+
+for c in "==" "&&" "||" "!=" ">=" "<=" ">>" "<<"
+do
+	echo 's/\([^ ]\)\('"$c"'\)/\\1 \\2/g' >> indent.sed
+	echo 's/\('"$c"'\)\([^ ]\)/\\1 \\2/g' >> indent.sed
+
+done
+
+cat <<EOF >> indent.sed
+
+# if(...) to if (...)
+s/if(/if (/g 
+
+# for(...) to for (...)
+s/for(/for (/g 
+
+# (a,b,c) to (a, b, c) 
+s/\(,\)\([^ \t]\)/, \2/g
+
+# remove tailing blanks
+s/[ \t]*$//g
+EOF
+
+chmod +x ./indent.sed
+}
+
+
+# main entry point
+# 1. check and generate a sed script
+# 2. use the sed script to process the file
+# 3. after processed, a temp file will be generated
+# 4. invoke vimdiff for user to manually merge the code
+# 5. remove any tempfile
+
+if [ $# -eq 0 ] ; then
+	usage
+	exit 0
+fi
+
+gen_sed_script
+# use our sed sript to find possilbe errors
+./indent.sed $1 > $1.temp
+
+if [ $? -eq 0 ] ; then
+
+
+# manually edit the file
+vimdiff $1 $1.temp
+
+fi
+
+# remove the temp file, no longer used
+rm $1.temp
+#rm indent.sed
