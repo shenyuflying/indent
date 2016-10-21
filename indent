@@ -51,6 +51,10 @@ s/if(/if (/g
 # for(...) to for (...)
 s/for(/for (/g 
 
+
+# while(...) to while (...)
+s/while(/while (/g 
+
 # (a,b,c) to (a, b, c) 
 s/\(,\)\([^ \t]\)/, \2/g
 
@@ -88,4 +92,4 @@ fi
 
 # remove the temp file, no longer used
 rm $1.temp
-#rm indent.sed
+rm indent.sed
