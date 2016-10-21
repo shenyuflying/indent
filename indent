@@ -32,7 +32,13 @@ EOF
 
 for c in '+' '-' '=' '>' '<' "[+-]="
 do
+	# deal with a+ b
+	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\( \)/\\1 \\2\\3/g' >> indent.sed
+	# deal with a +b
+	echo  's/\( \)\('"$c"'\)\([a-zA-Z0-9]\)/\\1\\2 \\3/g' >> indent.sed
+	# deal with a+b
 	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\([a-zA-Z0-9]\)/\\1 \\2 \\3/g' >> indent.sed
+	# deal with a+b+c...
 	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\([a-zA-Z0-9]\)/\\1 \\2 \\3/g' >> indent.sed
 done
 
