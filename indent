@@ -16,8 +16,7 @@ usage () {
 	echo "       '[c' command to move previous difference "
 	echo "       'po' command to merge the current difference"
 	echo "Bugs:  1. failed to format '*' '/'"
-	echo "       2. failed to format when partial correct such as a+ b to a + b"
-	echo "       3. will format comments which not wanted"
+	echo "       2. will format comments which not wanted"
 	echo "                      report more bugs to  shenyufly@163.com"
 	echo "===================================================================="
 	echo "Usage: indent filename"
@@ -32,7 +31,13 @@ EOF
 
 for c in '+' '-' '=' '>' '<' "[+-]="
 do
+	# deal with a+ b
+	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\( \)/\\1 \\2\\3/g' >> indent.sed
+	# deal with a +b
+	echo  's/\( \)\('"$c"'\)\([a-zA-Z0-9]\)/\\1\\2 \\3/g' >> indent.sed
+	# deal with a+b
 	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\([a-zA-Z0-9]\)/\\1 \\2 \\3/g' >> indent.sed
+	# deal with a+b+c...
 	echo  's/\([a-zA-Z0-9]\)\('"$c"'\)\([a-zA-Z0-9]\)/\\1 \\2 \\3/g' >> indent.sed
 done
 
