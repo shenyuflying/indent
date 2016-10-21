@@ -13,7 +13,6 @@ indent - A C code format tool
        '[c' command to move previous difference 
        'po' command to merge the current difference
 Bugs:  1. failed to format '*' '/'
-       2. failed to format when partial correct such as a+ b to a + b
        3. will format comments which not wanted
                       report more bugs to  shenyufly@163.com
 
