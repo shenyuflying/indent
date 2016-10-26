@@ -7,7 +7,7 @@ usage () {
 	echo ""
 	echo "    which will detect following format defects"
 	echo "       1. space before and after == && != >> << + - -= += > <"
-	echo "       2. space after if for"
+	echo "       2. space after if for switch while"
 	echo "       3. space after , "
 	echo "       4. tailing blanks"
 	echo "    after the code is formatted, indent will invoke vimdiff"
