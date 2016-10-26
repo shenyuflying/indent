@@ -3,7 +3,7 @@
 
 usage () {
 	echo "====================================================================="
-	echo " indent - A C code format tool"
+	echo " indent - A interactive C code format tool"
 	echo ""
 	echo "    which will detect following format defects"
 	echo "       1. space before and after == && != >> << + - -= += > <"
@@ -52,6 +52,9 @@ cat <<EOF >> indent.sed
 
 # if(...) to if (...)
 s/if(/if (/g 
+
+# switch(...) to switch (...)
+s/switch(/switch (/g 
 
 # for(...) to for (...)
 s/for(/for (/g 
